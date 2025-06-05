@@ -1,0 +1,8 @@
+{
+  "name": "react-native-template",
+  "version": "0.0.1",
+  "description": "React Native with Navigation Template",
+  "repository": "https://github.com/SolankiYogesh/react-native-template",
+  "author": "Yogesh Solanki <solankiyogesh3500@gmail.com>",
+  "license": "MIT"
+}
