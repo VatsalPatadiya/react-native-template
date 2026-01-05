@@ -1,5 +1,4 @@
-import Colors from './Colors'
 import CommonStyle from './CommonStyle'
-import Fonts from './Fonts'
+import Opacity from './Opacity'
 
-export {Colors, CommonStyle, Fonts}
+export {CommonStyle, Opacity}

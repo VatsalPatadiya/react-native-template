@@ -1,93 +1,96 @@
 /* eslint-disable no-console */
 
-import type {AxiosRequestConfig, AxiosRequestHeaders} from 'axios'
-import axios from 'axios'
+import type {AxiosRequestConfig} from 'axios'
+import Axios from 'axios'
 
 import Config from '@/Config/Config'
-import {AppStorage, AppStorageKeys} from '@/Helpers'
 
-type Methodtype = 'post' | 'get' | 'put' | 'delete'
-
-export const getHeaders = (isFormData = false) => {
-  return {
-    accept: 'application/json',
-    'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
-    'X-CSRFTOKEN': 'X-CSRFTOKEN: BFQcYOCNH7nZCRRbhEg8MzRWpLg6O1ThL0fiW6mbzSfs78qQExca0UrnBoXRyl1M'
-  }
-}
-
-const axiosInstance = axios.create({
+const axiosInstance = Axios.create({
   baseURL: Config.BASE_URL
 })
 
-axiosInstance.interceptors.response.use(
-  (res) => res,
-  (error) => {
-    // Return a Promise rejection if the status code is not 401
-    return Promise.reject(error)
+// Request interceptor
+axiosInstance.interceptors.request.use(
+  (config: any) => {
+    console.log(`axios request ${config.url}=>`, config)
+    return config
+  },
+  async (error: any) => {
+    console.log('axios request error =>', error)
+    return await Promise.reject(error)
   }
 )
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const tempConfig = config
-    const token = AppStorage.getString(AppStorageKeys.TOKEN)
+// Response interceptor
 
-    if (token) {
-      config.headers = {
-        ...config?.headers,
-        Authorization: `Bearer ${token}`
-      } as unknown as AxiosRequestHeaders
-    }
-
-    return tempConfig
+axiosInstance.interceptors.response.use(
+  (config: any) => {
+    console.log(`axios response ${config.config.url}=>`, config)
+    return config
   },
-  (error) => Promise.reject(error)
+  async (error: any) => {
+    console.log('axios response error =>', error.response || error)
+    if (error.response) {
+      console.log('axios response error', error.response)
+    }
+    return await Promise.reject(error)
+  }
 )
 
-const getFormData = (object: Record<string, unknown>): FormData => {
+const getFormData = (object: any) => {
   const formData = new FormData()
-  Object.keys(object).forEach((key) => formData.append(key, String(object[key])))
+  Object.keys(object).forEach((key) => {
+    formData.append(key, object[key])
+  })
   return formData
 }
 
-const APICall = <T>(
-  method: Methodtype,
-  body: any,
-  url: string | null = null,
-  headers: any = {},
-  formData = false
+const APICall = async (
+  method: string,
+  url: string,
+  body?: any,
+  headers?: any,
+  formData?: boolean
 ) => {
+  method = method.toLowerCase()
   const config: AxiosRequestConfig = {
-    method
+    method,
+    url,
+    timeout: 1000 * 60 * 2
   }
   if (url) {
     config.url = url
   }
   if (body && method === 'get') {
     config.params = body
-  } else if (body && (method === 'post' || method === 'put') && formData) {
-    config.data = getFormData(body)
-    config.headers = {'Content-Type': 'multipart/form-data'}
+  } else if (body && method.toLowerCase() === 'post' && !formData) {
+    config.data = body
+  } else if (body && method.toLowerCase() === 'post' && formData) {
+    headers = {...config.headers, 'Content-Type': 'multipart/form-data'}
+    if (formData) {
+      config.data = getFormData(body)
+    } else {
+      config.data = body
+    }
   } else {
     config.data = body
   }
-
   if (headers) {
     config.headers = headers
   }
 
-  return new Promise<ResponseTypeAXIOS<T>>((resolve) => {
+  return new Promise(async (resolve, reject) => {
     axiosInstance(config)
-      .then((res) => {
-        console.log('success', '<=======API Response======>', {
-          status: res.status,
-          data: res.data
-        })
-        return resolve({status: res.status, data: res.data})
+      .then((res: any) => {
+        resolve(res)
       })
-      .catch((error) => {
-        return resolve(error?.response)
+      .catch(async (error: any) => {
+        // You can set your error condition at here and access code using error.response.status
+        if (error.code === 'ECONNABORTED') {
+          reject('Request timeout. Please check your internet connection')
+          return
+        }
+        reject(error)
       })
   })
 }

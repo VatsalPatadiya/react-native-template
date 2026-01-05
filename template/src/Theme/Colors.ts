@@ -1,11 +1,38 @@
-export default {
-  white: '#FFFFFF',
+const DefaultTheme = {
+  white: '#ffffff',
   black: '#000000',
-  primary: '#3595E8',
+  transparent: 'transparent'
+}
+
+export const LightTheme = {
+  white: '#ffffff',
+  black: '#000000',
   transparent: 'transparent',
-  backdrop: 'rgba(0,0,0,0.5)',
-  grayD1D1: '#D1D1D1',
-  whiteShadeFAFB: '#FAFBFC',
-  redShadeFF: '#FF4C4C',
-  grayShadeF87: '#F8F7FC'
+  primary: '#123456',
+  grayShadeE3: '#E3E4E6',
+  grayShade91: '#919EAB'
+}
+
+export const DarkTheme = {
+  white: '#ffffff',
+  black: '#000000',
+  transparent: 'transparent',
+  primary: '#123456',
+  grayShadeE3: '#E3E4E6',
+  grayShade91: '#919EAB'
+}
+
+export type ColorType = {
+  white?: string
+  black?: string
+  transparent?: string
+  primary?: string
+  grayShadeE3?: string
+  grayShade91?: string
+}
+
+export const Theme = {
+  DefaultTheme,
+  DarkTheme,
+  LightTheme
 }

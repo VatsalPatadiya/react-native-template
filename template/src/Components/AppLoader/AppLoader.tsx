@@ -1,60 +1,23 @@
-import React, {forwardRef, useImperativeHandle, useRef} from 'react'
-import {ActivityIndicator, Dimensions, StyleSheet, View} from 'react-native'
+import React from 'react'
+import {ActivityIndicator, View} from 'react-native'
 
-import {moderateScale, verticalScale} from '@/Helpers'
-import {Colors, CommonStyle} from '@/Theme'
+import useColor from '@/Hooks/useColor'
 
-const {width, height} = Dimensions.get('screen')
+import myStyles from './AppLoader.style'
+import useAppLoader from './hooks/useAppLoader'
 
-const AppLoader = forwardRef<AppLoaderRefType>((_, ref) => {
-  const viewRef = useRef<View>(null)
+export default () => {
+  const colors = useColor()
+  const styles = myStyles(colors)
 
-  useImperativeHandle(ref, () => ({
-    showLoader(state: boolean) {
-      viewRef.current?.setNativeProps({
-        style: {
-          display: state ? 'flex' : 'none'
-        }
-      })
-    }
-  }))
-
-  return (
-    <View ref={viewRef} style={styles.modalContainer}>
+  const {isVisible} = useAppLoader()
+  if (isVisible) {
+    return (
       <View style={styles.container}>
-        <ActivityIndicator size={'large'} color={Colors.primary} />
+        <View style={styles.innerContainer}>
+          <ActivityIndicator color={colors.black} size={'large'} />
+        </View>
       </View>
-    </View>
-  )
-})
-
-export default AppLoader
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-    borderRadius: moderateScale(15),
-    elevation: 6,
-    height: verticalScale(100),
-    justifyContent: 'center',
-    shadowColor: Colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 3
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    width: verticalScale(100)
-  },
-  modalContainer: {
-    ...StyleSheet.absoluteFillObject,
-
-    ...CommonStyle.centerFlex,
-    backgroundColor: Colors.backdrop,
-    display: 'none',
-    height,
-    width,
-    zIndex: 9999999
+    )
   }
-})
+}

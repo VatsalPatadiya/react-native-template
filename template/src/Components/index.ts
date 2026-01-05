@@ -1,8 +1,9 @@
-import AppButton from './AppButton'
-import AppContainer from './AppContainer'
-import AppHeader from './AppHeader'
-import AppInput from './AppInput'
+import AppButton from './AppButton/AppButton'
+import AppContainer from './AppContainer/AppContainer'
+import AppHeader from './AppHeader/AppHeader'
 import AppLoader from './AppLoader/AppLoader'
-import Loader from './AppLoader/Loader'
+import AppModal from './AppModal/AppModal'
+import AppTextInput from './AppTextInput/AppTextInput'
+import StartComponent from './StartComponent/StartComponent'
 
-export {AppButton, AppContainer, AppHeader, AppInput, AppLoader, Loader}
+export {AppButton, AppContainer, AppHeader, AppLoader, AppModal, AppTextInput, StartComponent}
