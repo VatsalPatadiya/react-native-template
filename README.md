@@ -4,10 +4,10 @@
 
 | Packages     | Version |
 | ------------ | ------- |
-| React        | 19.2.0  |
-| React Native | 0.83.1  |
+| React        | Latest Compatible (Automatically resolved) |
+| React Native | Latest Stable (Automatically resolved) |
 
-A modern, scalable, and CLI-enhanced React Native starter — optimized for speed, maintainability, and developer productivity.
+A modern, scalable, and CLI-enhanced React Native starter — optimized for speed, maintainability, and developer productivity. It dynamically checks and sets the latest React Native and React versions upon project creation.
 
 ---
 
